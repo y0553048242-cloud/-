@@ -1,28 +1,48 @@
 (function(){
-const C={marketing:'שיווק',sales:'מכירות',pr:'יחסי ציבור',branding:'מיתוג ובידול'};
+'use strict';
 const Q=[
-{k:'marketing',d:'שיווק',type:'scale',q:'עד כמה ברור לך מה היעד השיווקי המרכזי של העסק שלך?',h:'1 = לא ברור · 10 = ברור ומסודר'},
-{k:'branding',d:'מיתוג',type:'scale',q:'כשלקוח חדש פוגש את העסק שלך, עד כמה הוא מבין מיד למה לבחור דווקא בך?',h:'1 = הבידול לא ברור · 10 = הערך ברור מאוד'},
-{k:'marketing',d:'שיווק',type:'scale',q:'עד כמה הפרסום שלך מייצר פניות או מכירות שאפשר למדוד?',h:'1 = בעיקר חשיפה · 10 = תוצאה מדידה'},
-{k:'sales',d:'מכירות',type:'choice',q:'מה קורה בדרך כלל כשנכנסת פנייה טובה?',opts:['יש תהליך מסודר ומעקב עד סגירה','יש תהליך, אבל המעקב חלקי','כל אחד מטפל בפניות בדרך אחרת','חלק מהפניות פשוט נעלמות']},
-{k:'pr',d:'יחסי ציבור',type:'choice',q:'איזו נוכחות יש לעסק שלך מעבר לפרסום הישיר?',opts:['כתבות, המלצות ושיתופי פעולה באופן קבוע','יש מדי פעם חשיפה או המלצות','בעיקר המלצות אישיות','כמעט שאין חשיפה']},
-{k:'branding',d:'מיתוג',type:'choice',q:'עד כמה ההצעה שלך מדויקת וברורה ללקוח הנכון?',opts:['מדויקת וברורה מאוד','די ברורה אבל אפשר לחדד','קשה לי להגדיר למי בדיוק','אני מציע כמה דברים לכמה קהלים']},
-{k:'marketing',d:'שיווק',type:'choice',q:'מאיפה מגיעים רוב הלקוחות החדשים שלך?',opts:['המלצות','פרסום','תוכן וקהילה','שיתופי פעולה','אין מקור קבוע']},
-{k:'branding',d:'מיתוג',type:'scale',q:'עד כמה האתר, הוואטסאפ, ההצעות והפרסומים משדרים אותה רמה?',h:'1 = לא אחיד · 10 = מותג ברור ואחיד'},
-{k:'marketing',d:'שיווק',type:'choice',q:'כשאתה מפרסם, עד כמה הקהל שאתה מכוון אליו מוגדר?',opts:['מדויק מאוד','יש כיוון אבל אפשר לדייק','פונה לכמה קהלים','כמעט לכולם']},
-{k:'sales',d:'מכירות',type:'scale',q:'אם מחר ייכנסו פי שניים פניות, עד כמה העסק ערוך להפוך אותן להכנסות?',h:'1 = לא ערוך · 10 = תהליך מסודר'}
+ {k:'marketing',d:'שיווק',type:'scale',q:'עד כמה ברור לך מה היעד השיווקי המרכזי של העסק שלך?',h:'1 = לא ברור · 10 = ברור ומסודר'},
+ {k:'branding',d:'מיתוג ובידול',type:'scale',q:'כשלקוח חדש פוגש את העסק שלך, עד כמה הוא מבין מיד למה לבחור דווקא בך?',h:'1 = הבידול לא ברור · 10 = הערך ברור מאוד'},
+ {k:'marketing',d:'שיווק',type:'scale',q:'עד כמה הפרסום שלך מייצר פניות או מכירות שאפשר למדוד?',h:'1 = בעיקר חשיפה · 10 = תוצאה מדידה'},
+ {k:'sales',d:'מכירות',type:'choice',q:'מה קורה בדרך כלל כשנכנסת פנייה טובה?',opts:['יש תהליך מסודר ומעקב עד סגירה','יש תהליך, אבל המעקב חלקי','כל אחד מטפל בפניות בדרך אחרת','חלק מהפניות פשוט נעלמות']},
+ {k:'pr',d:'יחסי ציבור',type:'choice',q:'איזו נוכחות יש לעסק שלך מעבר לפרסום הישיר?',opts:['כתבות, המלצות ושיתופי פעולה באופן קבוע','יש מדי פעם חשיפה או המלצות','בעיקר המלצות אישיות','כמעט שאין חשיפה']},
+ {k:'branding',d:'מיתוג ובידול',type:'choice',q:'עד כמה ההצעה שלך מדויקת וברורה ללקוח הנכון?',opts:['מדויקת וברורה מאוד','די ברורה אבל אפשר לחדד','קשה לי להגדיר למי בדיוק','אני מציע כמה דברים לכמה קהלים']},
+ {k:'marketing',d:'שיווק',type:'choice',q:'מאיפה מגיעים רוב הלקוחות החדשים שלך?',opts:['המלצות','פרסום','תוכן וקהילה','שיתופי פעולה','אין מקור קבוע']},
+ {k:'branding',d:'מיתוג ובידול',type:'scale',q:'עד כמה האתר, הוואטסאפ, ההצעות והפרסומים משדרים אותה רמה?',h:'1 = לא אחיד · 10 = מותג ברור ואחיד'},
+ {k:'marketing',d:'שיווק',type:'choice',q:'כשאתה מפרסם, עד כמה הקהל שאתה מכוון אליו מוגדר?',opts:['מדויק מאוד','יש כיוון אבל אפשר לדייק','פונה לכמה קהלים','כמעט לכולם']},
+ {k:'sales',d:'מכירות',type:'scale',q:'אם מחר ייכנסו פי שניים פניות, עד כמה העסק ערוך להפוך אותן להכנסות?',h:'1 = לא ערוך · 10 = תהליך מסודר'}
 ];
-let i=0,answers=[];const $=id=>document.getElementById(id);const track=(n,p)=>{try{if(typeof window.gtag==='function')window.gtag('event',n,p||{})}catch(e){}};
-function enhanceUI(){
- const img=document.querySelector('.head .logo');if(img){img.src='rot-symbol.svg?v=10';img.removeAttribute('srcset');img.alt='רו';img.style.cssText='width:92px;height:42px;object-fit:contain;object-position:center;display:block'}
- const hero=document.querySelector('.hero');if(hero){const h=hero.querySelector('h1'),p=hero.querySelector('p'),e=hero.querySelector('.eyebrow');if(e)e.textContent='אבחון עסקי קצר';if(h)h.innerHTML='מה חסר לעסק <span>שלך?</span>';if(p)p.textContent='10 שאלות קצרות. בסוף תקבל תמונה ברורה של מה העסק שלך צריך לחזק עכשיו.'}
- const st=document.createElement('style');st.textContent=`.choice{display:block;width:100%;text-align:right;border:1px solid #deded9;background:#fff;border-radius:14px;padding:16px 18px;margin:9px 0;font-size:15px;line-height:1.45;font-weight:700;cursor:pointer;transition:.15s}.choice:hover,.choice.sel{background:#111;color:#fff;border-color:#111;transform:translateY(-1px)}.scale{direction:ltr}#result .primary-need{display:flex;align-items:center;justify-content:center;gap:14px;border:1px solid #e1e1de;background:#111;color:#fff;border-radius:22px;padding:22px 18px;margin:14px 0 20px;min-height:120px}#result .primary-need .need-icon{font-size:48px;line-height:1}#result .primary-need .need-copy{text-align:right}#result .primary-need small{display:block;font-size:12px;color:#d8d8d5;margin-bottom:5px}#result .primary-need strong{display:block;font-size:25px;line-height:1.18}#result .primary-need em{display:block;width:9px;height:9px;background:#e12636;border-radius:50%;margin-top:9px}#result .map{background:#fff}#result .map-title{font-size:15px;margin:0 0 17px;font-weight:800}#result .metric{grid-template-columns:34px 88px 1fr 34px;gap:7px}#result .metric .metric-icon{font-size:22px;text-align:center}@media(max-width:560px){.head .logo{width:86px!important;height:40px!important}.hero{padding-top:28px}.hero h1{font-size:33px}.hero p{font-size:15px}.choice{padding:15px 16px}.num{padding:10px 0}#result .metric{grid-template-columns:30px 78px 1fr 32px}}`;document.head.appendChild(st);
- const result=$('result');if(result&&!result.querySelector('.primary-need')){const box=document.createElement('div');box.className='primary-need';box.id='primaryNeed';box.innerHTML='<div class="need-icon" id="needIcon">◆</div><div class="need-copy"><small>הדבר שהכי חשוב לעסק שלך עכשיו</small><strong id="needLabel">—</strong><em></em></div>';result.insertBefore(box,result.querySelector('h2')||result.firstElementChild)}
- if(result){const map=result.querySelector('.map');if(map&&!$('m4')){map.innerHTML='<h3 class="map-title">מפת 4 התחומים</h3><div class="metric"><span class="metric-icon">📈</span><span>שיווק</span><div class="track"><div class="fill" id="m1"></div></div><b id="v1">0%</b></div><div class="metric"><span class="metric-icon">🤝</span><span>מכירות</span><div class="track"><div class="fill" id="m2"></div></div><b id="v2">0%</b></div><div class="metric"><span class="metric-icon">📰</span><span>יחסי ציבור</span><div class="track"><div class="fill" id="m3"></div></div><b id="v3">0%</b></div><div class="metric"><span class="metric-icon">✨</span><span>מיתוג ובידול</span><div class="track"><div class="fill" id="m4"></div></div><b id="v4">0%</b></div>}}
- window.__needIcon={marketing:'📈',sales:'🤝',pr:'📰',branding:'✨'};
+const names={marketing:'שיווק חד וברור',sales:'מכירות מסודרות',pr:'יחסי ציבור חזקים',branding:'מיתוג ובידול'};
+const icons={marketing:'📈',sales:'💰',pr:'📣',branding:'✨'};
+let i=0,answers=[];
+const $=id=>document.getElementById(id);
+function start(){i=0;answers=[];render();}
+function render(){
+ $('hero').style.display='none';$('result').style.display='none';$('quiz').style.display='block';
+ const q=Q[i];$('count').textContent='שאלה '+(i+1)+' מתוך '+Q.length;$('pct').textContent=Math.round(i/Q.length*100)+'%';$('barfill').style.width=((i+1)/Q.length*100)+'%';$('domain').textContent=q.d;$('question').textContent=q.q;$('hint').textContent=q.h||'';$('scale').innerHTML='';
+ if(q.type==='choice') q.opts.forEach((t,j)=>{const b=document.createElement('button');b.type='button';b.className='choice'+(answers[i]===j+1?' sel':'');b.textContent=t;b.onclick=()=>pick(j+1);$('scale').appendChild(b)});
+ else for(let n=1;n<=10;n++){const b=document.createElement('button');b.type='button';b.className='num'+(answers[i]===n?' sel':'');b.textContent=n;b.onclick=()=>pick(n);$('scale').appendChild(b)}
+ $('back').style.visibility=i?'visible':'hidden';window.scrollTo(0,0);
 }
-function render(){enhanceUI();const q=Q[i];$('hero').style.display='none';$('result').style.display='none';$('quiz').style.display='block';$('count').textContent=`שאלה ${i+1} מתוך ${Q.length}`;$('pct').textContent=Math.round(i/Q.length*100)+'%';$('barfill').style.width=((i+1)/Q.length*100)+'%';$('domain').textContent=q.d;$('question').textContent=q.q;$('hint').textContent=q.h||'';$('scale').innerHTML='';if(q.type==='choice'){q.opts.forEach((t,j)=>{const b=document.createElement('button');b.type='button';b.className='choice'+(answers[i]===j+1?' sel':'');b.textContent=t;b.onclick=()=>pick(j+1);$('scale').appendChild(b)})}else{for(let n=1;n<=10;n++){const b=document.createElement('button');b.type='button';b.className='num'+(answers[i]===n?' sel':'');b.textContent=n;b.onclick=()=>pick(n);$('scale').appendChild(b)}}$('back').style.visibility=i?'visible':'hidden';window.scrollTo({top:0,behavior:'smooth'})}
-function pick(n){answers[i]=n;track('quiz_answer',{question_number:i+1,category:Q[i].k,score:n,type:Q[i].type});if(i<Q.length-1){i++;render()}else finish()}
-function finish(){const s={marketing:0,sales:0,pr:0,branding:0},c={marketing:0,sales:0,pr:0,branding:0};Q.forEach((q,j)=>{const n=answers[j]||0;const score=q.type==='choice'?Math.round(n/q.opts.length*10):n;s[q.k]+=score;c[q.k]++});const pct={};Object.keys(C).forEach(k=>pct[k]=c[k]?Math.round(s[k]/(c[k]*10)*100):0);const gap=Object.keys(C).sort((a,b)=>pct[a]-pct[b])[0];const headline={marketing:'שיווק חד וברור',sales:'מכירות מסודרות',pr:'יחסי ציבור חזקים',branding:'מיתוג ובידול'};const positive={marketing:'הדבר שהכי חשוב לעסק שלך הוא שיווק חד וברור',sales:'הדבר שהכי חשוב לעסק שלך הוא מכירות מסודרות',pr:'הדבר שהכי חשוב לעסק שלך הוא יחסי ציבור חזקים',branding:'הדבר שהכי חשוב לעסק שלך הוא מיתוג ובידול'};enhanceUI();$('quiz').style.display='none';$('result').style.display='block';$('rt').textContent=positive[gap];$('rx').textContent='זהו התחום שבו שיפור ממוקד יכול לעשות את ההבדל הגדול ביותר בעסק שלך עכשיו.';if($('needLabel'))$('needLabel').textContent=headline[gap];if($('needIcon'))$('needIcon').textContent=window.__needIcon[gap];['marketing','sales','pr','branding'].forEach((k,n)=>{if($('m'+(n+1))){$('m'+(n+1)).style.width=pct[k]+'%';$('v'+(n+1)).textContent=pct[k]+'%'}});$('rr').textContent='';$('rn').textContent='';$('nextText').textContent='';$('wa').href='https://wa.me/972553048242?text='+encodeURIComponent('היי יוסי, השלמתי את האבחון. התחום המרכזי שעלה לי הוא '+headline[gap]+'.');track('quiz_complete',{diagnosis:gap,questions_answered:Q.length});window.scrollTo({top:0,behavior:'smooth'})}
-window.start=()=>{i=0;answers=[];track('quiz_start');render()};window.goBack=()=>{if(i>0){i--;render()}};window.restart=()=>{i=0;answers=[];$('quiz').style.display='none';$('result').style.display='none';$('hero').style.display='block';enhanceUI()};enhanceUI();track('quiz_page_open');
+function pick(n){answers[i]=n;if(i<Q.length-1){i++;render();}else finish();}
+function finish(){
+ const s={marketing:0,sales:0,pr:0,branding:0},c={marketing:0,sales:0,pr:0,branding:0};
+ Q.forEach((q,j)=>{let n=answers[j]||1;let score=q.type==='choice'?Math.round(n/q.opts.length*10):n;s[q.k]+=score;c[q.k]++;});
+ const pct={};Object.keys(s).forEach(k=>pct[k]=Math.round(s[k]/(c[k]*10)*100));
+ const gap=Object.keys(s).sort((a,b)=>pct[a]-pct[b])[0];
+ $('quiz').style.display='none';$('result').style.display='block';
+ $('rt').textContent='הדבר שהכי חשוב לעסק שלך הוא '+names[gap];
+ $('rx').textContent='זהו התחום שכדאי לחזק עכשיו כדי ליצור עסק ברור, חזק וצומח יותר.';
+ const map=$('result').querySelector('.map');
+ map.innerHTML='<h3>מפת 4 התחומים</h3>'+['marketing','sales','pr','branding'].map(k=>'<div class="metric"><span class="metric-icon">'+icons[k]+'</span><span>'+({marketing:'שיווק',sales:'מכירות',pr:'יחסי ציבור',branding:'מיתוג ובידול'}[k])+'</span><div class="track"><div class="fill" style="width:'+pct[k]+'%"></div></div><b>'+pct[k]+'%</b></div>').join('');
+ $('rr').textContent='חוזקות: '+Object.keys(s).filter(k=>pct[k]>=70).map(k=>({marketing:'שיווק',sales:'מכירות',pr:'יחסי ציבור',branding:'מיתוג ובידול'}[k])).join(', ');
+ $('rn').textContent='התחום המרכזי לחיזוק: '+names[gap];
+ $('nextText').textContent='לבנות מהלך ממוקד ב'+names[gap]+' ולהפוך אותו למנוע צמיחה ברור.';
+ $('wa').href='https://wa.me/972553048242?text='+encodeURIComponent('היי יוסי, השלמתי את האבחון. התחום המרכזי שעלה לי הוא '+names[gap]+'.');
+ window.scrollTo(0,0);
+}
+function back(){if(i>0){i--;render();}}
+function restart(){i=0;answers=[];$('quiz').style.display='none';$('result').style.display='none';$('hero').style.display='block';}
+window.start=start;window.goBack=back;window.restart=restart;
+window.addEventListener('error',function(e){console.error('Quiz error:',e.message);});
 })();
