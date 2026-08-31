@@ -1,5 +1,5 @@
 (function(){
-  const C={pr:'PR ויחסי ציבור',marketing:'שיווק ופרסום',sales:'מכירות',branding:'מיתוג',targeting:'טרגוט'};
+  const C={pr:'יחסי ציבור',marketing:'שיווק',ads:'פרסום',sales:'מכירות',branding:'מיתוג',targeting:'טרגוט'};
   const Q=[
     ['מה הכי מרגיש תקוע כרגע?',[['לא מספיק אנשים מכירים את העסק','pr',4,'◈'],['יש חשיפה, אבל היא לא מביאה מספיק פניות','marketing',4,'↗'],['יש פניות, אבל קשה להפוך אותן ללקוחות','sales',4,'₪'],['העסק טוב, אבל לא ברור למה לבחור דווקא בו','branding',4,'◆']]],
     ['עד כמה המסר של העסק ברור למי שנחשף אליו?',[['ברור מאוד — מבינים מיד מי אנחנו ומה אנחנו מציעים','branding',1,'◆'],['יש מסר, אבל הוא לא מספיק חד','branding',2,'◇'],['אנשים שואלים הרבה שאלות בסיסיות','targeting',3,'◎'],['קשה לי להסביר במשפט אחד מה הבידול שלנו','branding',4,'◇']]],
@@ -10,10 +10,24 @@
     ['איך העסק נראה ונשמע כלפי חוץ?',[['יש שפה ברורה ועקבית','branding',1,'◆'],['הנראות טובה אבל לא מספיק מובחנת','branding',2,'◇'],['כל ערוץ נראה קצת אחרת','branding',3,'◌'],['לא השקענו כמעט בבניית מותג','branding',4,'□']]],
     ['מה הכי חסר לך כדי לגדול עכשיו?',[['יותר אמון, קשרים ואזכורים','pr',4,'◈'],['יותר תנועה וחשיפה לקהל הנכון','marketing',4,'↗'],['יותר סגירות ממה שכבר מגיע','sales',4,'₪'],['מיצוב חד וברור יותר','branding',4,'◆']]],
     ['עד כמה המוצר או השירות שלך מתאים לקהל שאליו אתה פונה?',[['התאמה גבוהה — זה בדיוק מה שהקהל צריך','targeting',1,'✓'],['יש התאמה, אבל צריך לדייק את ההצעה','targeting',2,'◇'],['אני לא בטוח שההצעה מדברת בשפה של הקהל','targeting',3,'◎'],['קשה לי להגדיר למה שהלקוח צריך דווקא את הפתרון הזה','targeting',4,'?']]],
-    ['אם היית צריך לבחור דבר אחד לשפר בחודש הקרוב, מה זה היה?',[['יחסי ציבור, אמון ונוכחות','pr',4,'◈'],['שיווק, פרסום ויצירת ביקוש','marketing',4,'↗'],['מכירות והמרת פניות ללקוחות','sales',4,'₪'],['מיתוג, מסר ובידול','branding',4,'◆'],['טרגוט — להגיע לאנשים הנכונים','targeting',4,'◎']]]
+    ['אם היית צריך לבחור דבר אחד לשפר בחודש הקרוב, מה זה היה?',[['יחסי ציבור, אמון ונוכחות','pr',4,'◈'],['שיווק ויצירת ביקוש','marketing',4,'↗'],['מכירות והמרת פניות ללקוחות','sales',4,'₪'],['מיתוג, מסר ובידול','branding',4,'◆'],['טרגוט — להגיע לאנשים הנכונים','targeting',4,'◎']]]
   ];
   let i=0,ans=[],s={pr:0,marketing:0,sales:0,branding:0,targeting:0};
   const $=id=>document.getElementById(id);
+
+  // Google Analytics 4
+  const GA_ID='G-2JY0HNDHRY';
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=window.gtag||function(){dataLayer.push(arguments);};
+  const gas=document.createElement('script');
+  gas.async=true;
+  gas.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;
+  document.head.appendChild(gas);
+  gtag('js',new Date());
+  gtag('config',GA_ID,{page_title:document.title,page_location:window.location.href});
+  gtag('event','quiz_page_open');
+  function track(name,params){try{gtag('event',name,params||{});}catch(e){}}
+
   function reset(){i=0;ans=[];s={pr:0,marketing:0,sales:0,branding:0,targeting:0};}
   function render(){
     const q=Q[i]; $('hero').style.display='none';$('result').style.display='none';$('quiz').style.display='block';$('progress').style.display='flex';
@@ -21,10 +35,16 @@
     $('count').textContent='שאלה '+(i+1)+' מתוך '+Q.length;$('pct').textContent=Math.round(i/Q.length*100)+'%';$('question').textContent=q[0];
     $('answers').innerHTML=q[1].map((a,n)=>'<button class="answer" onclick="window.__pick('+n+')"><span class="ico">'+a[3]+'</span><span>'+a[0]+'</span></button>').join('');$('back').disabled=i===0;
   }
-  window.__pick=function(n){const a=Q[i][1][n];ans[i]=a;s[a[1]]+=a[2];if(i<Q.length-1){i++;render();}else finish();};
-  window.start=function(){reset();render();scrollTo({top:0,behavior:'smooth'});};
+  window.__pick=function(n){
+    const a=Q[i][1][n];
+    ans[i]=a;
+    s[a[1]]+=a[2];
+    track('quiz_answer',{question_number:i+1,category:a[1]});
+    if(i<Q.length-1){i++;render();}else finish();
+  };
+  window.start=function(){reset();track('quiz_start');render();scrollTo({top:0,behavior:'smooth'});};
   window.goBack=function(){if(i<1)return;const a=ans[i-1];if(a)s[a[1]]-=a[2];ans.pop();i--;render();};
-  window.restart=function(){reset();$('quiz').style.display='none';$('result').style.display='none';$('progress').style.display='none';$('hero').style.display='block';scrollTo({top:0,behavior:'smooth'});};
+  window.restart=function(){reset();track('quiz_restart');$('quiz').style.display='none';$('result').style.display='none';$('progress').style.display='none';$('hero').style.display='block';scrollTo({top:0,behavior:'smooth'});};
   function finish(){
     $('quiz').style.display='none';$('progress').style.display='none';$('result').style.display='block';
     const keys=['pr','marketing','sales','branding','targeting'];
@@ -36,7 +56,9 @@
     $('rr').textContent=C[lead]+' הוא התחום שבו יש כרגע הכי הרבה מקום לדיוק ושיפור.';
     $('rn').textContent='כדאי לבדוק את המסר, הקהל, המוצר והפעולות בפועל — ולא רק להוסיף עוד פרסום.';
     $('nextText').textContent='לפני שמגדילים פעילות, כדאי לוודא ש'+C[lead]+' מחובר נכון לקהל ולמוצר.';
-    $('wa').href='https://wa.me/?text='+encodeURIComponent('היי, עשיתי את האבחון. התוצאה המרכזית שלי היא '+C[lead]+'. אשמח לבדוק את זה על העסק שלי.');
+    $('wa').href='https://wa.me/972553048242?text='+encodeURIComponent('היי, עשיתי את האבחון. התוצאה המרכזית שלי היא '+C[lead]+'. אשמח לבדוק את זה על העסק שלי.');
+    track('quiz_complete',{diagnosis:C[lead],questions_answered:Q.length});
     scrollTo({top:0,behavior:'smooth'});
   }
+  document.addEventListener('click',function(e){const link=e.target.closest&&e.target.closest('#wa');if(link)track('whatsapp_click',{placement:'quiz_result'});});
 })();
