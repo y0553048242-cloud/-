@@ -14,57 +14,23 @@
   ];
   let i=0,ans=[],s={pr:0,marketing:0,sales:0,branding:0,targeting:0};
   const $=id=>document.getElementById(id);
-
-  // Google Analytics 4
-  const GA_ID='G-2JY0HNDHRY';
-  window.dataLayer=window.dataLayer||[];
-  window.gtag=window.gtag||function(){dataLayer.push(arguments);};
-  const gas=document.createElement('script');
-  gas.async=true;
-  gas.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;
-  document.head.appendChild(gas);
-  gtag('js',new Date());
-  gtag('config',GA_ID,{page_title:document.title,page_location:window.location.href});
-  gtag('event','quiz_page_open');
-  function track(name,params){try{gtag('event',name,params||{});}catch(e){}}
-
-  // Use the exact brand symbol already prepared for this site, without the old tagline.
+  function track(name,params){try{if(typeof window.gtag==='function')window.gtag('event',name,params||{});}catch(e){}}
+  track('quiz_page_open');
   const logo=$('.logo');
-  if(logo){
-    logo.outerHTML='<img class="logo" alt="רוט" src="./rot-symbol.svg?v=2">';
-  }
-
+  if(logo){logo.outerHTML='<img class="logo" alt="רוט" src="./rot-symbol.svg?v=3">';}
   function reset(){i=0;ans=[];s={pr:0,marketing:0,sales:0,branding:0,targeting:0};}
-  function render(){
-    const q=Q[i]; $('hero').style.display='none';$('result').style.display='none';$('quiz').style.display='block';$('progress').style.display='flex';
-    $('progress').innerHTML=Q.map((_,n)=>'<div class="bar '+(n<=i?'on':'')+'></div>').join('');
-    $('count').textContent='שאלה '+(i+1)+' מתוך '+Q.length;$('pct').textContent=Math.round(i/Q.length*100)+'%';$('question').textContent=q[0];
-    $('answers').innerHTML=q[1].map((a,n)=>'<button class="answer" onclick="window.__pick('+n+')"><span class="ico">'+a[3]+'</span><span>'+a[0]+'</span></button>').join('');$('back').disabled=i===0;
-  }
-  window.__pick=function(n){
-    const a=Q[i][1][n];
-    ans[i]=a;
-    s[a[1]]+=a[2];
-    track('quiz_answer',{question_number:i+1,category:a[1]});
-    if(i<Q.length-1){i++;render();}else finish();
-  };
+  function render(){const q=Q[i];$('hero').style.display='none';$('result').style.display='none';$('quiz').style.display='block';$('progress').style.display='flex';$('progress').innerHTML=Q.map((_,n)=>'<div class="bar '+(n<=i?'on':'')+'></div>').join('');$('count').textContent='שאלה '+(i+1)+' מתוך '+Q.length;$('pct').textContent=Math.round(i/Q.length*100)+'%';$('question').textContent=q[0];$('answers').innerHTML=q[1].map((a,n)=>'<button class="answer" onclick="window.__pick('+n+')"><span class="ico">'+a[3]+'</span><span>'+a[0]+'</span></button>').join('');$('back').disabled=i===0;}
+  window.__pick=function(n){const a=Q[i][1][n];ans[i]=a;s[a[1]]+=a[2];track('quiz_answer',{question_number:i+1,category:a[1]});if(i<Q.length-1){i++;render();}else finish();};
   window.start=function(){reset();track('quiz_start');render();scrollTo({top:0,behavior:'smooth'});};
   window.goBack=function(){if(i<1)return;const a=ans[i-1];if(a)s[a[1]]-=a[2];ans.pop();i--;render();};
   window.restart=function(){reset();track('quiz_restart');$('quiz').style.display='none';$('result').style.display='none';$('progress').style.display='none';$('hero').style.display='block';scrollTo({top:0,behavior:'smooth'});};
   function finish(){
     $('quiz').style.display='none';$('progress').style.display='none';$('result').style.display='block';
-    const keys=['pr','marketing','sales','branding','targeting'];
-    const v={};keys.forEach(k=>v[k]=Math.round(Math.max(0,Math.min(100,100-s[k]/16*100))));
-    keys.sort((a,b)=>v[b]-v[a]);const lead=keys[0],second=keys[1];
-    $('ri').textContent='◆';$('rt').textContent='הכיוון שכדאי לבדוק קודם: '+C[lead];
-    $('rx').textContent='לפי התשובות, הפער המרכזי כרגע נראה ב'+C[lead]+'. אחריו כדאי לבדוק את '+C[second]+'.';
+    const keys=['pr','marketing','sales','branding','targeting'];const v={};keys.forEach(k=>v[k]=Math.round(Math.max(0,Math.min(100,100-s[k]/16*100))));keys.sort((a,b)=>v[b]-v[a]);const lead=keys[0],second=keys[1];
+    $('ri').textContent='◆';$('rt').textContent='הכיוון שכדאי לבדוק קודם: '+C[lead];$('rx').textContent='לפי התשובות, הפער המרכזי כרגע נראה ב'+C[lead]+'. אחריו כדאי לבדוק את '+C[second]+'.';
     ['pr','marketing','sales','branding','targeting'].forEach((k,n)=>{$('m'+(n+1)).style.width=v[k]+'%';$('v'+(n+1)).textContent=v[k];});
-    $('rr').textContent=C[lead]+' הוא התחום שבו יש כרגע הכי הרבה מקום לדיוק ושיפור.';
-    $('rn').textContent='כדאי לבדוק את המסר, הקהל, המוצר והפעולות בפועל — ולא רק להוסיף עוד פרסום.';
-    $('nextText').textContent='לפני שמגדילים פעילות, כדאי לוודא ש'+C[lead]+' מחובר נכון לקהל ולמוצר.';
-    $('wa').href='https://wa.me/972553048242?text='+encodeURIComponent('היי, עשיתי את האבחון. התוצאה המרכזית שלי היא '+C[lead]+'. אשמח לבדוק את זה על העסק שלי.');
-    track('quiz_complete',{diagnosis:C[lead],questions_answered:Q.length});
-    scrollTo({top:0,behavior:'smooth'});
+    $('rr').textContent=C[lead]+' הוא התחום שבו יש כרגע הכי הרבה מקום לדיוק ושיפור.';$('rn').textContent='כדאי לבדוק את המסר, הקהל, המוצר והפעולות בפועל — ולא רק להוסיף עוד פרסום.';$('nextText').textContent='לפני שמגדילים פעילות, כדאי לוודא ש'+C[lead]+' מחובר נכון לקהל ולמוצר.';
+    $('wa').href='https://wa.me/972553048242?text='+encodeURIComponent('היי, עשיתי את האבחון. התוצאה המרכזית שלי היא '+C[lead]+'. אשמח לבדוק את זה על העסק שלי.');track('quiz_complete',{diagnosis:C[lead],questions_answered:Q.length});scrollTo({top:0,behavior:'smooth'});
   }
-  document.addEventListener('click',function(e){const link=e.target.closest&&e.target.closest('#wa');if(link){track('whatsapp_click',{placement:'quiz_result'});}});
+  document.addEventListener('click',function(e){const link=e.target.closest&&e.target.closest('#wa');if(link)track('whatsapp_click',{placement:'quiz_result'});});
 })();
