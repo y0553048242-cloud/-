@@ -28,10 +28,16 @@
   gtag('event','quiz_page_open');
   function track(name,params){try{gtag('event',name,params||{});}catch(e){}}
 
+  // Use the exact brand symbol already prepared for this site, without the old tagline.
+  const logo=$('.logo');
+  if(logo){
+    logo.outerHTML='<img class="logo" alt="רוט" src="./rot-symbol.svg?v=2">';
+  }
+
   function reset(){i=0;ans=[];s={pr:0,marketing:0,sales:0,branding:0,targeting:0};}
   function render(){
     const q=Q[i]; $('hero').style.display='none';$('result').style.display='none';$('quiz').style.display='block';$('progress').style.display='flex';
-    $('progress').innerHTML=Q.map((_,n)=>'<div class="bar '+(n<=i?'on':'')+'"></div>').join('');
+    $('progress').innerHTML=Q.map((_,n)=>'<div class="bar '+(n<=i?'on':'')+'></div>').join('');
     $('count').textContent='שאלה '+(i+1)+' מתוך '+Q.length;$('pct').textContent=Math.round(i/Q.length*100)+'%';$('question').textContent=q[0];
     $('answers').innerHTML=q[1].map((a,n)=>'<button class="answer" onclick="window.__pick('+n+')"><span class="ico">'+a[3]+'</span><span>'+a[0]+'</span></button>').join('');$('back').disabled=i===0;
   }
@@ -60,5 +66,5 @@
     track('quiz_complete',{diagnosis:C[lead],questions_answered:Q.length});
     scrollTo({top:0,behavior:'smooth'});
   }
-  document.addEventListener('click',function(e){const link=e.target.closest&&e.target.closest('#wa');if(link)track('whatsapp_click',{placement:'quiz_result'});});
+  document.addEventListener('click',function(e){const link=e.target.closest&&e.target.closest('#wa');if(link){track('whatsapp_click',{placement:'quiz_result'});}});
 })();
