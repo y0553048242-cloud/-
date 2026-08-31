@@ -1,0 +1,31 @@
+name: Refine quiz categories
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: "!contains(github.event.head_commit.message, 'Refine quiz categories')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update quiz
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          old='<div class="map"><div class="mapTitle">מה עלה מהתשובות</div><div class="metric"><span>נוכחות</span><div class="track"><div class="fill" id="m1"></div></div><b id="v1"></b></div><div class="metric"><span>חשיפה</span><div class="track"><div class="fill" id="m2"></div></div><b id="v2"></b></div><div class="metric"><span>כיוון</span><div class="track"><div class="fill" id="m3"></div></div><b id="v3"></b></div><div class="metric"><span>מכירות</span><div class="track"><div class="fill" id="m4"></div></div><b id="v4"></b></div></div>'
+          new='<div class="map"><div class="mapTitle">היכן נמצא הפער המרכזי</div><div class="metric"><span>PR ויחסי ציבור</span><div class="track"><div class="fill" id="m1"></div></div><b id="v1"></b></div><div class="metric"><span>שיווק ופרסום</span><div class="track"><div class="fill" id="m2"></div></div><b id="v2"></b></div><div class="metric"><span>מכירות</span><div class="track"><div class="fill" id="m3"></div></div><b id="v3"></b></div><div class="metric"><span>מיתוג</span><div class="track"><div class="fill" id="m4"></div></div><b id="v4"></b></div><div class="metric"><span>טרגוט</span><div class="track"><div class="fill" id="m5"></div></div><b id="v5"></b></div></div>'
+          if old in s:s=s.replace(old,new,1)
+          s=s.replace('.metric{display:grid;grid-template-columns:82px 1fr 26px;','.metric{display:grid;grid-template-columns:110px 1fr 26px;',1)
+          if 'quiz.js' not in s:s=s.replace('</body>','<script src="quiz.js?v=1"></script></body>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Refine quiz categories"
+          git push
