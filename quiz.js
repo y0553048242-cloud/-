@@ -16,8 +16,6 @@
   const $=id=>document.getElementById(id);
   function track(name,params){try{if(typeof window.gtag==='function')window.gtag('event',name,params||{});}catch(e){}}
   track('quiz_page_open');
-  const logo=$('.logo');
-  if(logo){logo.outerHTML='<img class="logo" alt="רוט" src="./rot-symbol.svg?v=3">';}
   function reset(){i=0;ans=[];s={pr:0,marketing:0,sales:0,branding:0,targeting:0};}
   function render(){const q=Q[i];$('hero').style.display='none';$('result').style.display='none';$('quiz').style.display='block';$('progress').style.display='flex';$('progress').innerHTML=Q.map((_,n)=>'<div class="bar '+(n<=i?'on':'')+'></div>').join('');$('count').textContent='שאלה '+(i+1)+' מתוך '+Q.length;$('pct').textContent=Math.round(i/Q.length*100)+'%';$('question').textContent=q[0];$('answers').innerHTML=q[1].map((a,n)=>'<button class="answer" onclick="window.__pick('+n+')"><span class="ico">'+a[3]+'</span><span>'+a[0]+'</span></button>').join('');$('back').disabled=i===0;}
   window.__pick=function(n){const a=Q[i][1][n];ans[i]=a;s[a[1]]+=a[2];track('quiz_answer',{question_number:i+1,category:a[1]});if(i<Q.length-1){i++;render();}else finish();};
