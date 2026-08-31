@@ -20,4 +20,4 @@ function choose(k){history.push(k);s[k]++;if(i<Q.length-1){i++;render()}else sho
 function goBack(){if(!i)return;let k=history.pop();s[k]--;i--;render()}
 function show(){let win=cats.slice().sort((a,b)=>s[b]-s[a])[0],r=R[win];$('quiz').style.display='none';$('progress').style.display='none';$('result').style.display='block';$('ri').textContent=r[4];$('rt').textContent=r[0];$('rx').textContent=r[1];$('rr').textContent=r[2];$('rn').textContent=r[3];$('nt').textContent=r[3];cats.forEach((c,n)=>{let v=Math.round(s[c]/Q.length*100);$(`m${n}`).style.width=v+'%';$(`v${n}`).textContent=s[c]});let msg=encodeURIComponent(`היי יוסי, עשיתי את האבחון וקיבלתי: ${r[0]}. אשמח לבדוק יחד מה נכון לעסק שלי.`);$('wa').href='https://wa.me/972553048242?text='+msg}
 function restart(){i=0;history=[];s={marketing:0,ads:0,pr:0,sales:0,brand:0};$('result').style.display='none';$('hero').style.display='block';render()}
-</script></body></html>
+</script><script src="quiz.js?v=1"></script></body></html>
